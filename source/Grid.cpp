@@ -7,7 +7,6 @@ Grid::Grid(int simW, int simH, int cellSize) : _simulationWidth(simW), _simulati
     _rows = simH / cellSize;
     _col = simW / cellSize;
     _numOfCells = _rows*_col;
-    //_vertices.resize(_numOfCells*2); // Two points for every quad
     genQuads();
     std::cout << "Done creating grid.\n";
 }
@@ -24,15 +23,15 @@ void Grid::mouseClick(sf::Vector2i clickPos) {
     std::cout << "click at (col,row): (" << indexCol << "," << indexRow << ")\n";
 
     // Second, change colour
-    int index = getIndex(indexRow, indexCol);
+    /* int index = getIndex(indexRow, indexCol);
     for(int i = 0; i < 4; i++) {
         _vertices[index+i].color = sf::Color::Black;
-    }
-
-
-    // DEBUG -- remove later
-    std::cout << checkNeighbours(indexRow, indexCol) << std::endl;
-
+    } */
+    int index = getIndex(indexRow, indexCol);
+    if(_vertices[index].color == sf::Color::Yellow)
+        setColourAtIndex(indexRow, indexCol, sf::Color::Black);
+    else
+        setColourAtIndex(indexRow, indexCol, sf::Color::Yellow);
 }
 
 void Grid::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -48,16 +47,16 @@ void Grid::genQuads() {
         for(int j = 0; j < _rows; j++) {
             // Up-Left
             sf::Vector2f point1(_cellSize*i, _cellSize*j);
-            sf::Vertex vertex1(point1, sf::Color::Yellow);
+            sf::Vertex vertex1(point1, sf::Color::Black);
             // Up-Right
             sf::Vector2f point2(_cellSize*(i+1), _cellSize*j);
-            sf::Vertex vertex2(point2, sf::Color::Yellow);
+            sf::Vertex vertex2(point2, sf::Color::Black);
             // Down-Right
             sf::Vector2f point3(_cellSize*(i+1), _cellSize*(j+1));
-            sf::Vertex vertex3(point3, sf::Color::Yellow);
+            sf::Vertex vertex3(point3, sf::Color::Black);
             // Down-Left
             sf::Vector2f point4(_cellSize*i, _cellSize*(j+1));
-            sf::Vertex vertex4(point4, sf::Color::Yellow);
+            sf::Vertex vertex4(point4, sf::Color::Black);
 
             _vertices.push_back(vertex1);
             _vertices.push_back(vertex2);
@@ -70,7 +69,23 @@ void Grid::genQuads() {
 void Grid::update() {
     for(int i = 0; i < _col; i++) {
         for(int j = 0; j < _rows; j++) {
-            
+            // Alive or dead?
+            int index = getIndex(j, i);
+
+            bool isAlive = (_vertices[index].color == sf::Color::Yellow) ? true : false;
+            int neighbours = checkNeighbours(j, i);
+
+            if(isAlive && neighbours < 2) {
+                setColourAtIndex(j, i, sf::Color::Black);
+            }
+            else if(isAlive && (neighbours == 2 || neighbours == 3)) {}
+            else if(isAlive && neighbours > 3) {
+                setColourAtIndex(j, i, sf::Color::Black);
+            }
+            else if(!isAlive && neighbours == 3) {
+                setColourAtIndex(j, i, sf::Color::Yellow);
+            }
+
         }
     }
 }
@@ -103,4 +118,11 @@ int Grid::checkNeighbours(int indexRow, int indexColumn) {
 
 int Grid::getIndex(int indexRow, int indexColumn) {
     return (indexColumn*_rows + indexRow) * 4;
+}
+
+void Grid::setColourAtIndex(int indexRow, int indexColumn, sf::Color colour) {
+    int index = getIndex(indexRow, indexColumn);
+    for(int i = 0; i < 4; i++) {
+        _vertices[index+i].color = colour;
+    }
 }

@@ -36,6 +36,8 @@ private:
 
     // Returns index of first point of quad at given coordinates
     int getIndex(int indexRow, int indexColumn);
+
+    void setColourAtIndex(int indexRow, int indexColumn, sf::Color colour);
 };
 
 #endif
