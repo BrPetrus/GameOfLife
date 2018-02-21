@@ -24,10 +24,15 @@ void Grid::mouseClick(sf::Vector2i clickPos) {
     std::cout << "click at (col,row): (" << indexCol << "," << indexRow << ")\n";
 
     // Second, change colour
-    int index = (indexCol*_rows + indexRow) * 4;
+    int index = getIndex(indexRow, indexCol);
     for(int i = 0; i < 4; i++) {
         _vertices[index+i].color = sf::Color::Black;
     }
+
+
+    // DEBUG -- remove later
+    std::cout << checkNeighbours(indexRow, indexCol) << std::endl;
+
 }
 
 void Grid::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -43,18 +48,16 @@ void Grid::genQuads() {
         for(int j = 0; j < _rows; j++) {
             // Up-Left
             sf::Vector2f point1(_cellSize*i, _cellSize*j);
-            sf::Vertex vertex1(point1, sf::Color::Red);
+            sf::Vertex vertex1(point1, sf::Color::Yellow);
             // Up-Right
             sf::Vector2f point2(_cellSize*(i+1), _cellSize*j);
-            sf::Vertex vertex2(point2, sf::Color::Green);
+            sf::Vertex vertex2(point2, sf::Color::Yellow);
             // Down-Right
             sf::Vector2f point3(_cellSize*(i+1), _cellSize*(j+1));
-            sf::Vertex vertex3(point3, sf::Color::Blue);
+            sf::Vertex vertex3(point3, sf::Color::Yellow);
             // Down-Left
             sf::Vector2f point4(_cellSize*i, _cellSize*(j+1));
-            sf::Vertex vertex4(point4, sf::Color::White);
-
-            // FOR DEBUG PURPOSES YELLOW
+            sf::Vertex vertex4(point4, sf::Color::Yellow);
 
             _vertices.push_back(vertex1);
             _vertices.push_back(vertex2);
@@ -62,4 +65,42 @@ void Grid::genQuads() {
             _vertices.push_back(vertex4);
         }
     }
+}
+
+void Grid::update() {
+    for(int i = 0; i < _col; i++) {
+        for(int j = 0; j < _rows; j++) {
+            
+        }
+    }
+}
+
+int Grid::checkNeighbours(int indexRow, int indexColumn) {
+    int aliveNeighbours = 0;
+    for(int i = indexColumn-1; i <= indexColumn+1; i++) {
+        // Bounds checking
+        if(i < 0 || i > _col-1)
+            continue;
+
+        for(int j = indexRow-1; j <= indexRow+1; j++) {
+            // Bounds checking
+            if(j < 0 || j > _rows-1)
+                continue;
+
+            // Get index of neighbour
+            int index = getIndex(j, i);
+            if(_vertices[index].color == sf::Color::Yellow)
+                aliveNeighbours++;
+        }
+    }
+
+    // If cell we are looking at is alive, then we have to substract one
+    if(_vertices[getIndex(indexRow, indexColumn)].color == sf::Color::Yellow)
+        aliveNeighbours--;
+    
+    return aliveNeighbours;
+}
+
+int Grid::getIndex(int indexRow, int indexColumn) {
+    return (indexColumn*_rows + indexRow) * 4;
 }

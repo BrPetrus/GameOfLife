@@ -8,6 +8,9 @@ class Grid : public sf::Drawable, public sf::Transformable {
 public:
     Grid(int simW, int simH, int cellSize);
     void mouseClick(sf::Vector2i clickPos);
+
+    // Updates the logic
+    void update();
 private:
     // Dimensions
     int _simulationWidth;
@@ -27,6 +30,12 @@ private:
 
     // Gen quads
     void genQuads();
+
+    // Returns how many neighbours are alive
+    int checkNeighbours(int indexRow, int indexColumn);
+
+    // Returns index of first point of quad at given coordinates
+    int getIndex(int indexRow, int indexColumn);
 };
 
 #endif
