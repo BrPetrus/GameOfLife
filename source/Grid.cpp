@@ -1,6 +1,7 @@
 #include "Grid.hpp"
 
 #include <iostream>
+#include <queue>
 
 Grid::Grid(int simW, int simH, int cellSize) : _simulationWidth(simW), _simulationHeight(simH), _cellSize(cellSize) {
     std::cout << "Constructing Grid class...\n";
@@ -67,6 +68,16 @@ void Grid::genQuads() {
 }
 
 void Grid::update() {
+
+    struct change {
+        int row, col;
+        sf::Color colour;
+
+        change(int row, int col, sf::Color colour) : row(row), col(col), colour(colour) {};
+    };
+
+    std::queue<change> changes;
+
     for(int i = 0; i < _col; i++) {
         for(int j = 0; j < _rows; j++) {
             // Alive or dead?
@@ -76,17 +87,21 @@ void Grid::update() {
             int neighbours = checkNeighbours(j, i);
 
             if(isAlive && neighbours < 2) {
-                setColourAtIndex(j, i, sf::Color::Black);
+                changes.push(change(j, i, sf::Color::Black));
             }
             else if(isAlive && (neighbours == 2 || neighbours == 3)) {}
             else if(isAlive && neighbours > 3) {
-                setColourAtIndex(j, i, sf::Color::Black);
+                changes.push(change(j, i, sf::Color::Black));
             }
             else if(!isAlive && neighbours == 3) {
-                setColourAtIndex(j, i, sf::Color::Yellow);
+                changes.push(change(j, i, sf::Color::Yellow));
             }
-
         }
+    }
+    while(!changes.empty()) {
+        change change = changes.front();
+        setColourAtIndex(change.row, change.col, change.colour);
+        changes.pop();
     }
 }
 
