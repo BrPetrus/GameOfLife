@@ -8,7 +8,11 @@
 const int WINDOW_HEIGH = 800;
 const int WINDOW_WIDTH = 800;
 
+void printIntro();
+
 int main() {
+    printIntro();
+
     // Create the window
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGH), "My window");
     window.setFramerateLimit(10);
@@ -16,6 +20,15 @@ int main() {
     Grid myGrid(WINDOW_WIDTH, WINDOW_HEIGH, 20);
 
     bool isPaused = true;
+
+    // Prepare fonts
+    sf::Font muktaMalarRegular;
+    if(!muktaMalarRegular.loadFromFile("resources/MuktaMalar-Regular.ttf")) {
+        std::cerr << "[ERROR] Unable to load font!\n";
+    }
+    sf::Text paused;
+    paused.setFont(muktaMalarRegular);
+    paused.setString("Paused");
 
     // Run the program
     while(window.isOpen()) {
@@ -28,7 +41,6 @@ int main() {
             if(event.type == sf::Event::KeyPressed) {
                 if(event.key.code == sf::Keyboard::Space) {
                     isPaused = !isPaused;
-                    std::cout << "[Game state] Paused: " << isPaused << std::endl;
                 }
             }
         }
@@ -43,6 +55,7 @@ int main() {
             }   
         }
          
+        
 
         // Logic
         if(!isPaused)
@@ -51,8 +64,18 @@ int main() {
         window.clear(sf::Color::Black);
         // .... Drawing entities
         window.draw(myGrid);
+        if(isPaused)
+            window.draw(paused);
         window.display();
     }
 
     return 0;
+}
+
+void printIntro() {
+    std::cout << "Conway's Game of Life\nProgrammed by Bruno Petrus (brunoxpetrus@gmail.com)\n";
+    std::cout << "------------\n";
+    std::cout << "Press [SPACE] to pause/unpause\n";
+    std::cout << "Left click on cell to set it alive/dead\n";
+    std::cout << "Have fun!\n\n\n";
 }

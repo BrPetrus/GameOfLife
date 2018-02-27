@@ -21,13 +21,8 @@ void Grid::mouseClick(sf::Vector2i clickPos) {
     // First, determine cell
     int indexRow = clickPos.y / _cellSize;
     int indexCol = clickPos.x / _cellSize;
-    std::cout << "click at (col,row): (" << indexCol << "," << indexRow << ")\n";
 
     // Second, change colour
-    /* int index = getIndex(indexRow, indexCol);
-    for(int i = 0; i < 4; i++) {
-        _vertices[index+i].color = sf::Color::Black;
-    } */
     int index = getIndex(indexRow, indexCol);
     if(_vertices[index].color == sf::Color::Yellow)
         setColourAtIndex(indexRow, indexCol, sf::Color::Black);
