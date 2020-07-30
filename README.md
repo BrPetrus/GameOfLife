@@ -10,8 +10,10 @@ Conway's Game of Life implementation in C++ with SFML library.
 
 # Building 
 Simply run these commands
-'cmake'
-'make'
+
+`> cmake`
+
+`> make`
 
 # Usage
 Left click a cell to set it alive/dead.
