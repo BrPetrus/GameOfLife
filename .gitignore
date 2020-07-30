@@ -1,5 +1,11 @@
 # CMake build folder
 build/
 
+# ccls language server
+.ccls-cache/
+
 # Build files
 *.o
+
+# MScode settings
+settings.json

@@ -14,7 +14,7 @@ int main() {
     printIntro();
 
     // Create the window
-    sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGH), "My window");
+    sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGH), "My window", sf::Style::Titlebar | sf::Style::Close);
     window.setFramerateLimit(10);
 
     Grid myGrid(WINDOW_WIDTH, WINDOW_HEIGH, 20);
